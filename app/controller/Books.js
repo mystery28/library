@@ -11,7 +11,8 @@ Ext.define('Library.controller.Books', {
             },
             'booklist': {
                 iteminfobuttonclick: this.fnInfo,
-                itemdwnlbuttonclick: this.fnDwnl
+                itemdwnlbuttonclick: this.fnDwnl,
+                itemdeletebuttonclick: this.fnDelete
             },
             'bookinfo filefield[action=selectfile]': {
                 change: this.onSelectFile
@@ -21,9 +22,6 @@ Ext.define('Library.controller.Books', {
             },
             'bookinfo button[action=save]': {
                 click: this.updateData
-            },
-            'bookinfo button[action=delete]': {
-                click: this.deleteData
             },
             'bookinfo button[action=close]': {
                 click: this.closeWindow
@@ -122,13 +120,14 @@ Ext.define('Library.controller.Books', {
         var win = button.up('window');
         win.close();
     },
-    deleteData: function(button) {
-        var win = button.up('window'),
-            form = win.down('form').getForm(),
-            id = form.getRecord().get('id');
+    fnDelete: function(view, rowIndex, colIndex, item, e, record, row) {
+        var rec = view.getStore().getAt(rowIndex),
+            values = new Object();
+
+        values.id = rec.get('id');
         Ext.Ajax.request({
             url: 'app/data/delete_book.php',
-            params: {id:id},
+            params: values,
             success: function(response, options){
                 var data=Ext.decode(response.responseText);
                 if(data.success){
@@ -141,6 +140,5 @@ Ext.define('Library.controller.Books', {
                 }
             }
         });
-        win.close();
     }
 });

@@ -88,10 +88,6 @@ Ext.define('Library.view.BookInformation', {
             scope: this,
             action: 'save'
         },{
-            text: 'Delete',
-            scope: this,
-            action: 'delete'
-        },{
             text: 'close',
             scope: this,
             action: 'close'

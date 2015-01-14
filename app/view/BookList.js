@@ -33,7 +33,7 @@ Ext.define('Library.view.BookList', {
             header: 'Action',
             xtype: 'actioncolumn',
             align: 'center',
-            width:60,
+            width:70,
             items: [{
                 iconCls: 'icon-information',
                 tooltip: 'Information',
@@ -46,10 +46,16 @@ Ext.define('Library.view.BookList', {
                 handler: function(view, rowIndex, colIndex, item, e, record, row) {
                     this.up('grid').fireEvent('itemdwnlbuttonclick', view, rowIndex, colIndex, item, e, record, row);
                 }
+            },{
+                iconCls: 'icon-delete',
+                tooltip: 'Delete',
+                handler: function(view, rowIndex, colIndex, item, e, record, row) {
+                    this.up('grid').fireEvent('itemdeletebuttonclick', view, rowIndex, colIndex, item, e, record, row);
+                }
             }]
 
         }];
-        this.addStateEvents('iteminfobuttonclick', 'itemdwnlbuttonclick');
+        this.addStateEvents('iteminfobuttonclick', 'itemdwnlbuttonclick', 'itemdeletebuttonclick');
 
         this.callParent(arguments);
     }
