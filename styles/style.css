@@ -10,6 +10,10 @@
     background-image: url(download.png);
     width: 19px;
 }
+.x-action-col-cell img.icon-download-empty {
+    background-image: url(download_empty.png);
+    width: 19px;
+}
 .x-action-col-cell img.icon-delete {
     background-image: url(delete.png);
 }

@@ -21,7 +21,9 @@
 	$result = pg_query($connection, $query) or die("Error in query: $query." . pg_last_error($connection));
 	$rows = pg_num_rows($result);
 	if ($rows > 0) {
-	    for ($i=0, $j=0; $i<$rows; $i++, $j++) {
+	    $exResult[0]->id = 0;
+	    $exResult[0]->name = '- no selection -';
+	    for ($i=0, $j=1; $i<$rows; $i++, $j++) {
 		    $row = pg_fetch_object($result, $i);
 		    $exResult[$j] = $row;
 	    }

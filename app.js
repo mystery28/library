@@ -7,6 +7,7 @@ Ext.application({
     views: [
         'BookList',
         'BookInformation',
+        'BookDetail',
         'PublisherList',
         'AuthorList',
         'TechnologyList'
@@ -26,7 +27,7 @@ Ext.application({
             layout: 'ux.center',
             items: [{
                 xtype: 'panel',
-                width: 700,
+                width: 800,
                 border: '1',
                 items: [{
                     xtype: 'panel',
@@ -60,13 +61,34 @@ Ext.application({
                         width: 200
                     },{
                         xtype: 'technologylist',
-                        x: 480,
+                        x: 470,
                         y: 50,
                         width: 200
+                    },{
+                        xtype: 'button',
+                        text: 'reset all filters',
+                        action: 'resetfilters',
+                        x: 690,
+                        y: 50,
+                        width: 100
                     }]
                 },{
                     xtype: 'booklist',
                     width: '100%'
+                },{
+                    xtype: 'panel',
+                    width: '100%',
+                    padding: 10,
+                    items: [{
+                        xtype: 'bookdetail',
+                        width: '100%',
+                        height: '100'
+                    },{
+                        xtype: 'button',
+                        text: 'add book',
+                        action: 'addbutton',
+                        width: 100
+                    }]
                 }]
             }]
         });

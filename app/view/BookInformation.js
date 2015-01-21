@@ -11,6 +11,9 @@ Ext.define('Library.view.BookInformation', {
             xtype: 'form',
             bodyPadding: 5,
             items: [{
+                xtype: 'hiddenfield',
+                name: 'id'
+            },{
                 xtype: 'textfield',
                 name: 'title',
                 fieldLabel: 'Title',
@@ -63,6 +66,7 @@ Ext.define('Library.view.BookInformation', {
                     id: 'filetype',
                     name: 'file_type',
                     emptyText: 'Select a document to upload...',
+                    readOnly: true,
                     x: 0,
                     y: 5,
                     width: 210
@@ -78,6 +82,13 @@ Ext.define('Library.view.BookInformation', {
                     buttonOnly: true,
                     buttonText: 'Browse',
                     action: 'selectfile',
+                    listeners: {
+                        afterrender:function(cmp){
+                            cmp.fileInputEl.set({
+                                accept:'application/pdf'
+                            });
+                        }
+                    },
                     x: 0,
                     y: 35
                 }]

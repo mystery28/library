@@ -41,7 +41,14 @@ Ext.define('Library.view.BookList', {
                     this.up('grid').fireEvent('iteminfobuttonclick', view, rowIndex, colIndex, item, e, record, row);
                 }
             },{
-                iconCls: 'icon-download',
+                getClass: function(v, meta, rec) {
+                    if (rec.get('file_type')) {
+                        return 'icon-download';
+                    } else {
+                        return 'icon-download-empty';
+                    }
+                },
+//                iconCls: 'icon-download',
                 tooltip: 'Download',
                 handler: function(view, rowIndex, colIndex, item, e, record, row) {
                     this.up('grid').fireEvent('itemdwnlbuttonclick', view, rowIndex, colIndex, item, e, record, row);
@@ -53,8 +60,8 @@ Ext.define('Library.view.BookList', {
                     this.up('grid').fireEvent('itemdeletebuttonclick', view, rowIndex, colIndex, item, e, record, row);
                 }
             }]
-
         }];
+
         this.addStateEvents('iteminfobuttonclick', 'itemdwnlbuttonclick', 'itemdeletebuttonclick');
 
         this.callParent(arguments);

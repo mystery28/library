@@ -9,10 +9,17 @@ Ext.define('Library.controller.Books', {
             'button[action=search]': {
                 click: this.onComboSelect
             },
+            'button[action=resetfilters]': {
+                click: this.fnResetFilters
+            },
+            'button[action=addbutton]': {
+                click: this.fnInsertBook
+            },
             'booklist': {
                 iteminfobuttonclick: this.fnInfo,
                 itemdwnlbuttonclick: this.fnDwnl,
-                itemdeletebuttonclick: this.fnDelete
+                itemdeletebuttonclick: this.fnDeleteBook,
+                select: this.onGridSelect
             },
             'bookinfo filefield[action=selectfile]': {
                 change: this.onSelectFile
@@ -21,7 +28,7 @@ Ext.define('Library.controller.Books', {
                 click: this.onUploadFile
             },
             'bookinfo button[action=save]': {
-                click: this.updateData
+                click: this.fnUpdateBook
             },
             'bookinfo button[action=close]': {
                 click: this.closeWindow
@@ -41,6 +48,23 @@ Ext.define('Library.controller.Books', {
         values.author = (idAuthor)? idAuthor: 0;
         values.technology = idTechnology.toString();
         values.titleSearch = titleSearch;
+
+        var store = Ext.widget('booklist').getStore();
+        Ext.apply(store.getProxy().extraParams,values);
+        store.reload();
+    },
+    fnResetFilters: function(button) {
+        var values = new Object();
+
+        Ext.getCmp('titleSearch').setValue('');
+        Ext.getCmp('publisherlist').setValue('');
+        Ext.getCmp('authorlist').setValue('');
+        Ext.getCmp('technologylist').setValue('');
+
+        values.publisher = 0;
+        values.author = 0;
+        values.technology = 0;
+        values.titleSearch = '';
 
         var store = Ext.widget('booklist').getStore();
         Ext.apply(store.getProxy().extraParams,values);
@@ -77,7 +101,11 @@ Ext.define('Library.controller.Books', {
     },
     onSelectFile: function(thiss, value, eOpts) {
         Ext.getCmp('filetype').setValue(value.replace(/C:\\fakepath\\/g, ''));
-//        alert(value);
+    },
+    onGridSelect : function(grid, record, index, eOpts) {
+        var detailView = Ext.ComponentQuery.query('bookdetail')[0];
+
+        detailView.getViewModel().setData({rec: record});
     },
     onUploadFile: function(button) {
         var form = button.up('form').getForm();
@@ -91,36 +119,42 @@ Ext.define('Library.controller.Books', {
             })
         }
     },
-    updateData: function(button) {
+    fnInsertBook: function(button) {
+        var v = Ext.widget('bookinfo');
+        var modelBook = Ext.create('Library.model.Book',{id:'0'});
+
+        v.down('form').loadRecord(modelBook);
+    },
+    fnUpdateBook: function(button) {
         var win = button.up('window'),
             form = win.down('form').getForm(),
             values = form.getValues(),
-            id = form.getRecord().get('id');
-        values.id = id;
+            urlPath = new String();
+
         values.technology_id = Ext.encode(values.technology_id);
+
+        if (values.id == 0) urlPath = 'app/data/insert_book.php';
+        if (values.id != 0) urlPath = 'app/data/update_book.php';
+
 //        alert(Ext.encode(values));
         Ext.Ajax.request({
-            url: 'app/data/update_book.php',
+            url: urlPath,
             params: values,
             success: function(response, options){
-                var data=Ext.decode(response.responseText);
+                var data = Ext.decode(response.responseText);
                 if(data.success){
                     var store = Ext.widget('booklist').getStore();
                     store.load();
-                    Ext.Msg.alert('Update',data.message);
+//                    Ext.Msg.alert('Edit',data.message);
                 }
                 else{
-                    Ext.Msg.alert('Update','Update book failed');
+                    Ext.Msg.alert('Edit','Edit book failed');
                 }
             }
         });
         win.close();
     },
-    closeWindow: function(button) {
-        var win = button.up('window');
-        win.close();
-    },
-    fnDelete: function(view, rowIndex, colIndex, item, e, record, row) {
+    fnDeleteBook: function(view, rowIndex, colIndex, item, e, record, row) {
         var rec = view.getStore().getAt(rowIndex),
             values = new Object();
 
@@ -129,16 +163,20 @@ Ext.define('Library.controller.Books', {
             url: 'app/data/delete_book.php',
             params: values,
             success: function(response, options){
-                var data=Ext.decode(response.responseText);
+                var data = Ext.decode(response.responseText);
                 if(data.success){
                     var store = Ext.widget('booklist').getStore();
                     store.load();
-                    Ext.Msg.alert('Delete',data.message);
+//                    Ext.Msg.alert('Delete',data.message);
                 }
                 else{
                     Ext.Msg.alert('Delete','Delete book failed');
                 }
             }
         });
+    },
+    closeWindow: function(button) {
+        var win = button.up('window');
+        win.close();
     }
 });
